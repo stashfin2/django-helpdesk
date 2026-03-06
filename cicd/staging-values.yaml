@@ -1,0 +1,72 @@
+namespace: staging
+deployment_name: django-helpdesk
+replicaCount: 1  
+
+nodeSelector: {}
+
+Labels:
+  env: dev
+  
+configMap:
+  data:
+    
+
+secret:
+  enabled: false
+  names:
+    - meta-secret
+    - digigold-secret
+
+service:
+  type: ClusterIP
+  restPort: 8000       # REST API port
+  grpcNorthSouthPort: 3003
+  grpcEastWestPort: 3002
+
+serviceAccount:
+  create: false
+  name: 'admin'
+  annotations: {}
+
+grpcNorthSouth:
+  enabled: true
+
+grpcEastWest:
+  enabled: true
+
+http:
+  enabled: true
+
+istio:
+  enabled: false
+  gateway: 'istio-system/httpbin-gateway'
+  hosts:
+    - 'metaurl.stashfin.com'
+
+mapping:
+  host: 'metaurl.stashfin.com'
+  restPrefix: /meta/
+  grpcNorthSouthPrefix: /service.meta/
+  grpcEastWestPrefix: /service.meta/
+  grpcNorthSouthRewrite: /service.meta/
+  secretName: eqx-staging
+
+healthcheck:
+  enabled: true
+  Path: /health
+  port: 8000
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
