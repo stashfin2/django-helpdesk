@@ -19,7 +19,8 @@ RUN pip install \
     django-helpdesk \
     django-allauth \
     psycopg2-binary \
-    gunicorn
+    gunicorn \
+    django-user-accounts
 
 # copy project
 COPY . /app
